@@ -1,0 +1,22 @@
+<mat-card class="status-card">
+    <mat-card-header>
+        <mat-card-title>SpaceFlow CRM</mat-card-title>
+        <mat-card-subtitle>{{statusMessage || 'Backend connectivity check'}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        @if (loading) {
+        <div class="spinner-wrap">
+            <mat-spinner diameter="36"></mat-spinner>
+        </div>
+        } @else {
+        <p class="status-text">{{ statusMessage || 'No status loaded yet.' }}</p>
+        }
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-flat-button color="primary" type="button" (click)="loadStatus()">
+            Refresh Status
+        </button>
+    </mat-card-actions>
+</mat-card>

@@ -1,0 +1,71 @@
+# =========================
+# ASP.NET Core / .NET
+# =========================
+bin/
+obj/
+out/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+
+# Rider / JetBrains
+.idea/
+
+# Logs
+*.log
+
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+
+# Environment files
+.env
+.env.*
+
+# =========================
+# Angular / Node.js
+# =========================
+node_modules/
+dist/
+dist-*/
+tmp/
+out-tsc/
+.angular/
+.cache/
+.nx/
+
+# npm / yarn / pnpm logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Angular specific
+coverage/
+*.tsbuildinfo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE settings
+# =========================
+.vscode/
+*.code-workspace
+
+# =========================
+# Secrets (IMPORTANT)
+# =========================
+*.key
+*.pem
+secrets.json
+appsettings.Development.json
