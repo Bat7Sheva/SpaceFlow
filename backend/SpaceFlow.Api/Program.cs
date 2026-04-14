@@ -1,45 +1,23 @@
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using SpaceFlow.Api.Data;
-using SpaceFlow.Api.Services;
+using Serilog;
+using SpaceFlow.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
-builder.Services.AddHealthChecks();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<ITestService, TestService>();
-builder.Services.AddCors(options =>
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 {
-    options.AddPolicy("AngularClient", policy =>
-    {
-        policy.WithOrigins(builder.Configuration["Cors:AngularOrigin"] ?? "http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", "SpaceFlow.Api")
+        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName);
 });
+
+builder.Services.AddApiFoundation(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
-
-app.UseHttpsRedirection();
-
-app.UseCors("AngularClient");
-
-app.UseAuthorization();
-
-app.MapControllers();
-app.MapHealthChecks("/health");
+app.UseApiFoundation();
 
 app.Run();
+
