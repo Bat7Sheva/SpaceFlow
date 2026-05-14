@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -29,7 +29,8 @@ import { LeadService } from '../services/lead.service';
     MatSnackBarModule
   ],
   templateUrl: './lead-list.component.html',
-  styleUrl: './lead-list.component.scss'
+  styleUrl: './lead-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeadListComponent implements OnInit {
   private readonly leadService = inject(LeadService);
@@ -42,6 +43,7 @@ export class LeadListComponent implements OnInit {
   loading = false;
   leads: LeadClient[] = [];
   filteredLeads: LeadClient[] = [];
+  availableStatuses: string[] = [];
 
   ngOnInit(): void {
     this.loadLeads();
@@ -55,9 +57,9 @@ export class LeadListComponent implements OnInit {
     });
   }
 
-  get availableStatuses(): string[] {
+  private updateAvailableStatuses(): void {
     const statuses = this.leads.map((lead) => lead.status).filter(Boolean);
-    return Array.from(new Set(statuses)).sort((a, b) => a.localeCompare(b));
+    this.availableStatuses = Array.from(new Set(statuses)).sort((a, b) => a.localeCompare(b));
   }
 
   loadLeads(): void {
@@ -66,6 +68,7 @@ export class LeadListComponent implements OnInit {
     this.leadService.getLeads().subscribe({
       next: (response) => {
         this.leads = response.data ?? [];
+        this.updateAvailableStatuses();
         this.applyFilters();
         this.loading = false;
       },
