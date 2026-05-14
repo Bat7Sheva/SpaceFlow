@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,6 +36,7 @@ export class LeadListComponent implements OnInit {
   private readonly leadService = inject(LeadService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly statusControl = new FormControl('', { nonNullable: true });
@@ -71,10 +72,12 @@ export class LeadListComponent implements OnInit {
         this.updateAvailableStatuses();
         this.applyFilters();
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.loading = false;
         this.snackBar.open('שגיאה בטעינת לידים', 'סגירה', { duration: 3000 });
+        this.cdr.markForCheck();
       }
     });
   }
