@@ -1,0 +1,56 @@
+<section class="list-shell">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>לידים ולקוחות</mat-card-title>
+      <mat-card-subtitle>ניהול לידים, סטטוסים ומשימות המשך</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="filters">
+        <mat-form-field appearance="outline">
+          <mat-label>חיפוש</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="שם, טלפון או אימייל" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>סינון לפי סטטוס</mat-label>
+          <mat-select [formControl]="statusControl">
+            <mat-option value="">הכל</mat-option>
+            @for (status of availableStatuses; track status) {
+              <mat-option [value]="status">{{ status }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="button" (click)="goToCreate()">ליד חדש</button>
+          <button mat-stroked-button type="button" (click)="loadLeads()">רענון</button>
+        </div>
+      </div>
+
+      @if (loading) {
+        <div class="state-wrap">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else if (filteredLeads.length === 0) {
+        <div class="state-wrap">
+          <p>לא נמצאו לידים להצגה</p>
+        </div>
+      } @else {
+        <div class="lead-grid">
+          @for (lead of filteredLeads; track lead.id) {
+            <mat-card class="lead-card" [routerLink]="['/leads', lead.id]">
+              <mat-card-title>{{ lead.fullName }}</mat-card-title>
+              <mat-card-subtitle>{{ lead.status }}</mat-card-subtitle>
+              <mat-card-content>
+                <p>טלפון: {{ lead.phone }}</p>
+                <p>מקור: {{ lead.source }}</p>
+                <p>מעקב הבא: {{ lead.nextFollowUpAt ? (lead.nextFollowUpAt | date: 'dd/MM/yyyy HH:mm') : 'לא נקבע' }}</p>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

@@ -2,8 +2,11 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IO.Compression;
 using SpaceFlow.Api.Data;
 using SpaceFlow.Api.Infrastructure.Authentication;
 using SpaceFlow.Api.Infrastructure.Cors;
@@ -19,11 +22,31 @@ public static class ServiceCollectionExtensions
         services.AddEndpointsApiExplorer();
         services.AddOpenApi();
         services.AddHealthChecks();
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        });
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Fastest;
+        });
+        services.AddOutputCache(options =>
+        {
+            options.AddBasePolicy(policy => policy.Expire(TimeSpan.FromSeconds(30)));
+        });
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContextPool<AppDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),
+            poolSize: 128);
 
         services.AddScoped<ITestService, TestService>();
+        services.AddScoped<ILeadService, LeadService>();
 
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<Program>();

@@ -1,7 +1,25 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: #f4f6fb;
+  background: linear-gradient(180deg, #eef5ff 0%, #f7fafc 50%, #fdfdfd 100%);
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  font-weight: 700;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.active-link {
+  background-color: color-mix(in srgb, white 22%, transparent);
 }
 
 .content-shell {

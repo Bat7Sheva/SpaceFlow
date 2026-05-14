@@ -1,0 +1,48 @@
+.list-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 220px auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.state-wrap {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lead-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.lead-card {
+  cursor: pointer;
+}
+
+.lead-card p {
+  margin: 0.35rem 0;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}

@@ -39,10 +39,12 @@ public static class ApplicationBuilderExtensions
 
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseHttpsRedirection();
+        app.UseResponseCompression();
         app.UseRouting();
         app.UseCors("AngularClient");
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseOutputCache();
 
         app.MapControllers();
         app.MapHealthChecks("/health");
